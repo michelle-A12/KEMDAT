@@ -53,7 +53,8 @@ func ListProjects(w http.ResponseWriter, r *http.Request) {
 	// TODO
 	projects, err := db.GetAllProjects(r.Context()) 
 	if err != nil { 
-		w.WriteHeader(http.StatusInternalServerError) json.NewEncoder(w).Encode(map[string]string{"error": "Gagal mengambil daftar proyek"}) 
+		w.WriteHeader(http.StatusInternalServerError) 
+		json.NewEncoder(w).Encode(map[string]string{"error": "Gagal mengambil daftar proyek"}) 
 		return 
 	}
 
