@@ -27,13 +27,15 @@ func SubmitProject(w http.ResponseWriter, r *http.Request) {
 	userCtx, _ := lmodel.UserFromContext(r.Context())
 	// TODO
 	var req SubmitProjectReq 
-	if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil { 
-		w.WriteHeader(http.StatusBadRequest) json.NewEncoder(w).Encode(map[string]string{"error": "Format JSON tidak valid"}) 
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil { 
+		w.WriteHeader(http.StatusBadRequest) 
+		json.NewEncoder(w).Encode(map[string]string{"error": "Format JSON tidak valid"}) 
 		return 
 	}
 
 	if req.Title == "" || req.Description == "" { 
-		w.WriteHeader(http.StatusBadRequest) json.NewEncoder(w).Encode(map[string]string{"error": "Title dan description wajib diisi"}) 
+		w.WriteHeader(http.StatusBadRequest) 
+		json.NewEncoder(w).Encode(map[string]string{"error": "Title dan description wajib diisi"}) 
 		return 
 	}
 
