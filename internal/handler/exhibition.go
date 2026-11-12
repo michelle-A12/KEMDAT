@@ -140,9 +140,9 @@ func GetProjectGrades(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to fetch project", http.StatusInternalServerError)
 		return
 	}
-
-	// TODO
 	if userCtx.Role == "student" {
+	// TODO
+	
 		if project.StudentID != userCtx.ID {
 			http.Error(w, "Forbidden: you can only view grades for your own projects", http.StatusForbidden)
 			return
