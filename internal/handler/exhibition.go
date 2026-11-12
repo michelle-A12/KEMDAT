@@ -26,23 +26,24 @@ type GradeProjectReq struct {
 func SubmitProject(w http.ResponseWriter, r *http.Request) {
 	userCtx, _ := lmodel.UserFromContext(r.Context())
 	// TODO
-	var req SubmitProjectReq 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil { 
-		w.WriteHeader(http.StatusBadRequest) 
-		json.NewEncoder(w).Encode(map[string]string{"error": "Format JSON tidak valid"}) 
-		return 
+	var req SubmitProjectReq
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Format JSON tidak valid"})
+		return
 	}
 
-	if req.Title == "" || req.Description == "" { 
-		w.WriteHeader(http.StatusBadRequest) 
-		json.NewEncoder(w).Encode(map[string]string{"error": "Title dan description wajib diisi"}) 
-		return 
+	if req.Title == "" || req.Description == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Title dan description wajib diisi"})
+		return
 	}
 
-	projectID, err := db.CreateProject(r.Context(), req.Title, req.Description, userCtx.ID) 
-	if err != nil { 
-		w.WriteHeader(http.StatusInternalServerError) json.NewEncoder(w).Encode(map[string]string{"error": "Gagal menyimpan proyek ke database"}) 
-		return 
+	projectID, err := db.CreateProject(r.Context(), req.Title, req.Description, userCtx.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Gagal menyimpan proyek ke database"})
+		return
 	}
 	// TODO
 	w.WriteHeader(http.StatusCreated)
@@ -51,15 +52,15 @@ func SubmitProject(w http.ResponseWriter, r *http.Request) {
 
 func ListProjects(w http.ResponseWriter, r *http.Request) {
 	// TODO
-	projects, err := db.GetAllProjects(r.Context()) 
-	if err != nil { 
-		w.WriteHeader(http.StatusInternalServerError) 
-		json.NewEncoder(w).Encode(map[string]string{"error": "Gagal mengambil daftar proyek"}) 
-		return 
+	projects, err := db.GetAllProjects(r.Context())
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Gagal mengambil daftar proyek"})
+		return
 	}
 
-	if projects == nil { 
-		projects = []lmodel.Project{} 
+	if projects == nil {
+		projects = []lmodel.Project{}
 	}
 	// TODO
 
@@ -111,7 +112,7 @@ func GradeProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.GradeProject(r.Context(), projectID, userCtx.ID, req.Score, req.Feedback); err != nil {
+	if err := db.CreateGrade(r.Context(), projectID, userCtx.ID, req.Score, req.Feedback); err != nil {
 		http.Error(w, "Failed to submit grade", http.StatusInternalServerError)
 		return
 	}
@@ -122,8 +123,8 @@ func GradeProject(w http.ResponseWriter, r *http.Request) {
 
 func GetProjectGrades(w http.ResponseWriter, r *http.Request) {
 	userCtx, _ := lmodel.UserFromContext(r.Context())
-	
-	// TODO 
+
+	// TODO
 	projectID, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
 		http.Error(w, "Invalid project ID", http.StatusBadRequest)
@@ -139,7 +140,7 @@ func GetProjectGrades(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to fetch project", http.StatusInternalServerError)
 		return
 	}
-	
+
 	// TODO
 	if userCtx.Role == "student" {
 		if project.StudentID != userCtx.ID {
